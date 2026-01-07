@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Sun, Wallet, Battery, AlertTriangle, Leaf, Info } from 'lucide-react';
 import Link from 'next/link';
 
@@ -8,14 +8,6 @@ export default function SolarCalculator() {
     // ... same state and effect logic ...
     const [bill, setBill] = useState(3000);
     const [roofArea, setRoofArea] = useState(300);
-    const [systemSize, setSystemSize] = useState(0);
-    const [totalCost, setTotalCost] = useState(0);
-    const [subsidy, setSubsidy] = useState(0);
-    const [netCost, setNetCost] = useState(0);
-    const [annualSavings, setAnnualSavings] = useState(0);
-    const [lifetimeSavings, setLifetimeSavings] = useState(0);
-    const [co2Offset, setCo2Offset] = useState(0);
-    const [areaWarning, setAreaWarning] = useState(false);
 
     const TARIFF = 7;
     const SUN_HOURS = 4.5;
@@ -24,12 +16,12 @@ export default function SolarCalculator() {
     const DEGRADATION = 0.005;
     const CO2_FACTOR = 0.82;
 
-    useEffect(() => {
+    const stats = useMemo(() => {
         const monthlyUnits = bill / TARIFF;
         let calculatedSize = (monthlyUnits / 30) / SUN_HOURS;
         calculatedSize = Math.max(1, Math.round(calculatedSize));
         const maxCapacityByArea = roofArea / SQFT_PER_KW;
-        setAreaWarning(calculatedSize > maxCapacityByArea);
+        const areaWarning = calculatedSize > maxCapacityByArea;
         const cost = calculatedSize * COST_PER_KW;
         let calculatedSubsidy = 0;
         if (calculatedSize <= 2) {
@@ -50,14 +42,20 @@ export default function SolarCalculator() {
             currentYearGen *= (1 - DEGRADATION);
         }
         const co2 = annualGen * CO2_FACTOR;
-        setSystemSize(calculatedSize);
-        setTotalCost(cost);
-        setSubsidy(calculatedSubsidy);
-        setNetCost(net);
-        setAnnualSavings(year1Savings);
-        setLifetimeSavings(totalLifetimeSavings);
-        setCo2Offset(co2);
+
+        return {
+            systemSize: calculatedSize,
+            totalCost: cost,
+            subsidy: calculatedSubsidy,
+            netCost: net,
+            annualSavings: year1Savings,
+            lifetimeSavings: totalLifetimeSavings,
+            co2Offset: co2,
+            areaWarning
+        };
     }, [bill, roofArea]);
+
+    const { systemSize, totalCost, subsidy, netCost, annualSavings, lifetimeSavings, co2Offset, areaWarning } = stats;
 
     return (
         <section id="calculator" className="relative overflow-hidden py-24 bg-bg-deep">

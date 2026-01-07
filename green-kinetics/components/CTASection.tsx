@@ -79,7 +79,7 @@ export default function CTASection() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                        <span className="font-medium">Gov't Subsidy Upto 78,000</span>
+                                        <span className="font-medium">Gov&apos;t Subsidy Upto 78,000</span>
                                     </div>
                                 </div>
                             </div>

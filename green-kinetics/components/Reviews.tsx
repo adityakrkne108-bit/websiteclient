@@ -97,7 +97,7 @@ export default function Reviews() {
 
                             {/* Review Text */}
                             <p className="text-slate-300 leading-relaxed mb-6 text-base lg:text-lg">
-                                "{review.review}"
+                                &quot;{review.review}&quot;
                             </p>
 
                             {/* System Size Badge */}
